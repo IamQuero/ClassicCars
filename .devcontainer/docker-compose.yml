@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/php:1-8.2-bookworm
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: classiccars
+      POSTGRES_PASSWORD: classiccars
+      POSTGRES_DB: classiccars
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
