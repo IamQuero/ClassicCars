@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Listing extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'car_id', 'seller_id', 'price', 'status', 'published_at', 'expires_at',
+        'car_id',
+        'seller_id',
+        'price',
+        'status',
+        'published_at',
+        'expires_at',
     ];
 
     protected $casts = [
@@ -40,11 +46,65 @@ class Listing extends Model
     public function favoritedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'favorites')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        return $query
+            ->when(
+                $filters['brand'] ?? null,
+                fn($q, $brand) =>
+                $q->whereHas('car', fn($c) => $c->where('brand', 'ilike', $brand))
+            )
+            ->when(
+                $filters['model'] ?? null,
+                fn($q, $model) =>
+                $q->whereHas('car', fn($c) => $c->where('model', 'ilike', "%{$model}%"))
+            )
+            ->when(
+                $filters['fuel'] ?? null,
+                fn($q, $fuel) =>
+                $q->whereHas('car', fn($c) => $c->where('fuel', $fuel))
+            )
+            ->when(
+                $filters['transmission'] ?? null,
+                fn($q, $t) =>
+                $q->whereHas('car', fn($c) => $c->where('transmission', $t))
+            )
+            ->when(
+                $filters['year_min'] ?? null,
+                fn($q, $year) =>
+                $q->whereHas('car', fn($c) => $c->where('year', '>=', $year))
+            )
+            ->when(
+                $filters['year_max'] ?? null,
+                fn($q, $year) =>
+                $q->whereHas('car', fn($c) => $c->where('year', '<=', $year))
+            )
+            ->when(
+                $filters['mileage_max'] ?? null,
+                fn($q, $km) =>
+                $q->whereHas('car', fn($c) => $c->where('mileage', '<=', $km))
+            )
+            ->when($filters['price_min'] ?? null, fn($q, $p) => $q->where('price', '>=', $p))
+            ->when($filters['price_max'] ?? null, fn($q, $p) => $q->where('price', '<=', $p));
+    }
+
+    public function scopeSorted(Builder $query, ?string $sort): Builder
+    {
+        return match ($sort) {
+            'price_asc' => $query->orderBy('price'),
+            'price_desc' => $query->orderByDesc('price'),
+            'year_desc' => $query->orderByDesc(
+                Car::select('year')->whereColumn('cars.id', 'listings.car_id')
+            ),
+            default => $query->latest('published_at'),
+        };
     }
 }
