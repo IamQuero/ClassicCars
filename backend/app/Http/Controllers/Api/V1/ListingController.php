@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\ListingIndexRequest;
 use App\Http\Resources\V1\ListingResource;
 use App\Models\Listing;
-use Illuminate\Http\Request;
-use App\Http\Requests\V1\ListingIndexRequest;
 
 class ListingController extends Controller
 {

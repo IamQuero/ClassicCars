@@ -19,9 +19,17 @@ class ListingIndexRequest extends FormRequest
             'fuel' => ['sometimes', 'in:petrol,diesel,electric,hybrid'],
             'transmission' => ['sometimes', 'in:manual,automatic'],
             'price_min' => ['sometimes', 'numeric', 'min:0'],
-            'price_max' => ['sometimes', 'numeric', 'min:0', 'gte:price_min'],
+            // El gte solo aplica si llega el extremo inferior: sin esto, pedir
+            // solo price_max fallaba porque comparaba contra un campo ausente.
+            'price_max' => array_values(array_filter([
+                'sometimes', 'numeric', 'min:0',
+                $this->filled('price_min') ? 'gte:price_min' : null,
+            ])),
             'year_min' => ['sometimes', 'integer', 'min:1900'],
-            'year_max' => ['sometimes', 'integer', 'gte:year_min'],
+            'year_max' => array_values(array_filter([
+                'sometimes', 'integer', 'min:1900',
+                $this->filled('year_min') ? 'gte:year_min' : null,
+            ])),
             'mileage_max' => ['sometimes', 'integer', 'min:0'],
             'sort' => ['sometimes', 'in:recent,price_asc,price_desc,year_desc'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:50'],
