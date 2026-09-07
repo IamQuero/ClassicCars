@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\ListingController;
+use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\MyListingController;
 use App\Http\Controllers\Api\V1\PhotoController;
 use Illuminate\Support\Facades\Route;
@@ -27,5 +28,9 @@ Route::prefix('v1')->group(function () {
         Route::get('me/favorites', [FavoriteController::class, 'index']);
         Route::post('listings/{listing}/favorite', [FavoriteController::class, 'store']);
         Route::delete('listings/{listing}/favorite', [FavoriteController::class, 'destroy']);
+
+        Route::post('listings/{listing}/messages', [MessageController::class, 'store']);
+        Route::get('me/conversations', [MessageController::class, 'conversations']);
+        Route::get('me/conversations/{listing}/{user}', [MessageController::class, 'thread']);
     });
 });
