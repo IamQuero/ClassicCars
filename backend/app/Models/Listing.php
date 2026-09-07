@@ -102,6 +102,17 @@ class Listing extends Model
         );
     }
 
+    /** Marca cada anuncio con si el usuario dado lo tiene en favoritos. */
+    public function scopeWithIsFavorite(Builder $query, ?User $user): Builder
+    {
+        return $query->when(
+            $user,
+            fn ($q) => $q->withExists([
+                'favoritedBy as is_favorite' => fn ($f) => $f->whereKey($user->id),
+            ])
+        );
+    }
+
     public function scopeSorted(Builder $query, ?string $sort): Builder
     {
         return match ($sort) {
