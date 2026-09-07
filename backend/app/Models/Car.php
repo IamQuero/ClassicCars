@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Car extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'brand', 'model', 'generation', 'year', 'mileage',
         'engine', 'horsepower', 'transmission', 'fuel', 'description',

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Message extends Model
 {
     use HasFactory;
+
     protected $fillable = ['sender_id', 'receiver_id', 'listing_id', 'message', 'read_at'];
 
     protected $casts = ['read_at' => 'datetime'];

@@ -22,6 +22,7 @@ class ListingController extends Controller
 
         $listings = Listing::query()
             ->with(['car', 'photos', 'seller'])
+            ->withIsFavorite($request->user())
             ->where('status', 'published')
             ->filter($filters)
             ->sorted($filters['sort'] ?? null)
@@ -39,6 +40,10 @@ class ListingController extends Controller
         }
 
         $listing->load(['car', 'photos', 'seller']);
+
+        if ($user = $request->user()) {
+            $listing->loadExists(['favoritedBy as is_favorite' => fn ($f) => $f->whereKey($user->id)]);
+        }
 
         return new ListingResource($listing);
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\V1;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class PhotoResource extends JsonResource
 {
@@ -12,6 +12,7 @@ class PhotoResource extends JsonResource
         return [
             'id' => $this->id,
             'path' => $this->path,
+            'url' => Storage::disk('public')->url($this->path),
             'type' => $this->type,
             'order' => $this->order,
         ];

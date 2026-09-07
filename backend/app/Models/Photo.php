@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Photo extends Model
 {
     use HasFactory;
+
     protected $fillable = ['listing_id', 'path', 'type', 'order'];
 
     public function listing(): BelongsTo
