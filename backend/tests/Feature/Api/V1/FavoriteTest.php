@@ -89,6 +89,26 @@ class FavoriteTest extends TestCase
         $this->assertFalse($respuesta[$otro->id]['is_favorite']);
     }
 
+    public function test_con_un_token_bearer_el_catalogo_publico_marca_los_favoritos(): void
+    {
+        $user = User::factory()->create();
+        $guardado = Listing::factory()->create();
+        $user->favorites()->attach($guardado->id);
+        $token = $user->createToken('api')->plainTextToken;
+
+        // El listado es una ruta pública: sin pedirle el usuario al guard de
+        // sanctum, el token se ignoraría y is_favorite no viajaría nunca.
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/v1/listings')
+            ->assertOk()
+            ->assertJsonPath('data.0.is_favorite', true);
+
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson("/api/v1/listings/{$guardado->id}")
+            ->assertOk()
+            ->assertJsonPath('data.is_favorite', true);
+    }
+
     public function test_para_un_invitado_no_aparece_la_marca_de_favorito(): void
     {
         $listing = Listing::factory()->create();

@@ -1,0 +1,173 @@
+/* ==========================================================================
+   TEMA DE CLASSICCARS
+   --------------------------------------------------------------------------
+   Este es EL archivo para tocar el aspecto de la web. Todo lo visual sale de
+   aquí: colores, tipografías, espaciado, esquinas y sombras. Ningún componente
+   define un color a mano, así que cambiando estos valores cambia toda la web.
+
+   Cómo funciona:
+     1. Los "colores base" son la paleta cruda: el vocabulario.
+     2. Los "roles" dicen para qué se usa cada color: el significado.
+        Los componentes usan SIEMPRE roles, nunca colores base.
+     3. El bloque de modo oscuro solo redefine roles, no colores base.
+
+   Para cambiar la identidad de la web normalmente basta con tocar
+   --marca y los colores base de la sección 1.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------
+     1. COLORES BASE — la paleta cruda
+     --------------------------------------------------------------------- */
+
+  /* Neutros, del papel al carbón */
+  --gris-50: #f8f7f5;
+  --gris-100: #efedea;
+  --gris-200: #e0ddd8;
+  --gris-300: #c9c4bc;
+  --gris-400: #9a938a;
+  --gris-500: #6f6862;
+  --gris-600: #4d4842;
+  --gris-700: #35312d;
+  --gris-800: #24211e;
+  --gris-900: #17150f;
+
+  /* Color de marca: un verde inglés de coche clásico */
+  --marca-100: #dbe8e0;
+  --marca-300: #8fb8a0;
+  --marca-500: #2f6b48;
+  --marca-700: #1f4a31;
+  --marca-900: #12301f;
+
+  /* Acento cálido, para precios y llamadas a la acción secundarias */
+  --acento-100: #f6e7d5;
+  --acento-500: #b8722a;
+  --acento-700: #8a5320;
+
+  /* Colores de estado */
+  --exito-500: #2f7d4f;
+  --aviso-500: #b8862a;
+  --error-100: #fbe3e0;
+  --error-500: #b3392c;
+  --error-700: #8a2a20;
+
+  /* ---------------------------------------------------------------------
+     2. ROLES — para qué se usa cada color (lo que usan los componentes)
+     --------------------------------------------------------------------- */
+
+  --color-fondo: var(--gris-50);
+  --color-superficie: #ffffff;
+  --color-superficie-suave: var(--gris-100);
+  --color-borde: var(--gris-200);
+  --color-borde-fuerte: var(--gris-300);
+
+  --color-texto: var(--gris-800);
+  --color-texto-suave: var(--gris-500);
+  --color-texto-inverso: #ffffff;
+
+  --color-primario: var(--marca-500);
+  --color-primario-oscuro: var(--marca-700);
+  --color-primario-suave: var(--marca-100);
+
+  --color-acento: var(--acento-500);
+  --color-acento-suave: var(--acento-100);
+
+  --color-exito: var(--exito-500);
+  --color-aviso: var(--aviso-500);
+  --color-error: var(--error-500);
+  --color-error-suave: var(--error-100);
+
+  --color-foco: var(--marca-500);
+
+  /* ---------------------------------------------------------------------
+     3. TIPOGRAFÍA
+     --------------------------------------------------------------------- */
+
+  --fuente-titulos: ui-serif, Georgia, 'Times New Roman', serif;
+  --fuente-texto: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fuente-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-base: 1rem;
+  --texto-lg: 1.125rem;
+  --texto-xl: 1.375rem;
+  --texto-2xl: 1.75rem;
+  --texto-3xl: 2.25rem;
+
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --peso-fuerte: 600;
+
+  --interlineado: 1.6;
+  --interlineado-titulo: 1.2;
+
+  /* ---------------------------------------------------------------------
+     4. ESPACIADO — escala de 4 px
+     --------------------------------------------------------------------- */
+
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-5: 1.5rem;
+  --espacio-6: 2rem;
+  --espacio-7: 3rem;
+  --espacio-8: 4rem;
+
+  /* ---------------------------------------------------------------------
+     5. FORMAS Y SOMBRAS
+     --------------------------------------------------------------------- */
+
+  --radio-sm: 4px;
+  --radio-md: 8px;
+  --radio-lg: 14px;
+  --radio-redondo: 999px;
+
+  --sombra-sm: 0 1px 2px rgb(23 21 15 / 0.06);
+  --sombra-md: 0 2px 8px rgb(23 21 15 / 0.08);
+  --sombra-lg: 0 8px 28px rgb(23 21 15 / 0.12);
+
+  /* ---------------------------------------------------------------------
+     6. DISPOSICIÓN
+     --------------------------------------------------------------------- */
+
+  --ancho-maximo: 1200px;
+  --altura-cabecera: 64px;
+  --transicion: 150ms ease;
+}
+
+/* ==========================================================================
+   MODO OSCURO
+   Solo se redefinen roles. Si añades un color nuevo arriba, no hace falta
+   tocarlo aquí salvo que su papel cambie a oscuras.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fondo: var(--gris-900);
+    --color-superficie: var(--gris-800);
+    --color-superficie-suave: var(--gris-700);
+    --color-borde: var(--gris-700);
+    --color-borde-fuerte: var(--gris-600);
+
+    --color-texto: var(--gris-100);
+    --color-texto-suave: var(--gris-400);
+
+    --color-primario: var(--marca-300);
+    --color-primario-oscuro: var(--marca-100);
+    --color-primario-suave: var(--marca-900);
+
+    --color-acento: #d99a52;
+    --color-acento-suave: #3a2a18;
+
+    --color-error: #e07a6d;
+    --color-error-suave: #3a1e1a;
+
+    --color-foco: var(--marca-300);
+
+    --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sombra-md: 0 2px 8px rgb(0 0 0 / 0.45);
+    --sombra-lg: 0 8px 28px rgb(0 0 0 / 0.55);
+  }
+}

@@ -3,8 +3,9 @@
 Marketplace de coches clásicos. Proyecto personal para coger ritmo de trabajo
 real: Git y ramas, Laravel, API REST versionada, tests y CI.
 
-El backend está en `backend/` (Laravel 12, PHP 8.2). El frontend todavía no
-existe: la API está terminada y esperándolo.
+- `backend/` — API REST en Laravel 12 (PHP 8.2).
+- `frontend/` — Vue 3 + Vite que la consume. Ver `frontend/README.md`,
+  especialmente `src/styles/theme.css`, que es donde vive todo lo visual.
 
 ## Puesta en marcha
 
@@ -21,13 +22,25 @@ El devcontainer levanta PHP 8.2 y PostgreSQL 16. Los tests usan SQLite en
 memoria, así que corren sin base de datos externa:
 
 ```bash
-php artisan test          # 72 tests
+php artisan test          # 95 tests
 ./vendor/bin/pint         # estilo de código
 ```
 
 El seeder deja un usuario fijo, `adrian@classiccars.test` (contraseña
 `password`), 30 anuncios con fotos, favoritos, mensajes y un BMW E30 con tres
 anuncios a distinto precio para probar el historial.
+
+Con el backend en marcha, el frontend se arranca aparte:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+npm run dev               # http://localhost:5173
+```
+
+`APP_URL` del backend tiene que coincidir con la URL por la que se sirve la
+API: las fotos se devuelven con esa base.
 
 ## API v1
 
@@ -116,7 +129,8 @@ El comando `php artisan listings:expire` (programado a las 03:00) pone en
 
 ## Pendiente
 
-- Frontend (en marcha).
+- Estilo visual del frontend (colores e identidad).
+- Tests de frontend.
 - Los datos del coche son compartidos por todos sus anuncios: editarlos desde
   un anuncio reescribe también los históricos. Si el historial crece en
   importancia, habrá que congelar una copia por anuncio.

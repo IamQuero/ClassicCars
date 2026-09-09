@@ -22,7 +22,7 @@ class ListingController extends Controller
 
         $listings = Listing::query()
             ->with(['car', 'photos', 'seller'])
-            ->withIsFavorite($request->user())
+            ->withIsFavorite($request->user('sanctum'))
             ->visible()
             ->filter($filters)
             ->sorted($filters['sort'] ?? null)
@@ -35,14 +35,16 @@ class ListingController extends Controller
     public function show(Request $request, Listing $listing): ListingResource
     {
         // Un borrador solo lo ve su propio vendedor; para el resto no existe.
-        if ($listing->status === 'draft' && $request->user()?->id !== $listing->seller_id) {
+        $usuario = $request->user('sanctum');
+
+        if ($listing->status === 'draft' && $usuario?->id !== $listing->seller_id) {
             throw new NotFoundHttpException;
         }
 
         $listing->load(['car', 'photos', 'seller']);
 
-        if ($user = $request->user()) {
-            $listing->loadExists(['favoritedBy as is_favorite' => fn ($f) => $f->whereKey($user->id)]);
+        if ($usuario) {
+            $listing->loadExists(['favoritedBy as is_favorite' => fn ($f) => $f->whereKey($usuario->id)]);
         }
 
         return new ListingResource($listing);
