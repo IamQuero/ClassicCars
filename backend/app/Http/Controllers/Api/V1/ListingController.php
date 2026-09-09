@@ -23,7 +23,7 @@ class ListingController extends Controller
         $listings = Listing::query()
             ->with(['car', 'photos', 'seller'])
             ->withIsFavorite($request->user())
-            ->where('status', 'published')
+            ->visible()
             ->filter($filters)
             ->sorted($filters['sort'] ?? null)
             ->paginate($filters['per_page'] ?? 15)

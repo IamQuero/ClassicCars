@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | URL del frontend
+    |--------------------------------------------------------------------------
+    |
+    | Se usa para CORS y para construir los enlaces de los correos (por
+    | ejemplo el de recuperar contraseña), que abre el frontend y no Laravel.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

@@ -13,6 +13,9 @@ class PhotoResource extends JsonResource
             'id' => $this->id,
             'path' => $this->path,
             'url' => Storage::disk('public')->url($this->path),
+            'thumbnail_url' => $this->thumbnail_path
+                ? Storage::disk('public')->url($this->thumbnail_path)
+                : Storage::disk('public')->url($this->path),
             'type' => $this->type,
             'order' => $this->order,
         ];

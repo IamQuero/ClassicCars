@@ -45,6 +45,9 @@ minuto en el resto de la API.
 | POST | `/login` | — | Devuelve `user` y `token`. |
 | POST | `/logout` | sí | Borra el token con el que se llama. |
 | GET | `/me` | sí | Usuario autenticado. |
+| PATCH | `/me` | sí | Edita `name`, `email`, `role` y `password`. Cambiar la contraseña exige `current_password` y cierra el resto de sesiones. |
+| POST | `/forgot-password` | — | Envía el enlace de recuperación al frontend. Responde igual exista o no el email. |
+| POST | `/reset-password` | — | Restablece con `token`, `email` y `password`. Invalida todas las sesiones. |
 
 Roles: `buyer`, `seller`, `professional`. Solo `seller` y `professional`
 publican anuncios.
@@ -59,6 +62,7 @@ publican anuncios.
 | PATCH | `/listings/{id}` | sí | Edita precio, estado y datos del coche. Solo el dueño. |
 | DELETE | `/listings/{id}` | sí | Retira el anuncio (`status = expired`), no borra la fila. Solo el dueño. |
 | GET | `/me/listings` | sí | Anuncios propios, borradores incluidos. Filtro `?status=`. |
+| GET | `/listings/filters` | — | Marcas y modelos disponibles y rangos de precio, año y kilómetros, para poblar los filtros. |
 
 Filtros de `GET /listings`: `brand`, `model` (búsqueda parcial, sin distinguir
 mayúsculas), `fuel`, `transmission`, `price_min`, `price_max`, `year_min`,
@@ -73,13 +77,18 @@ Cuerpo de `POST /listings`: `price`, `status` opcional (`draft` por defecto),
 `published_at` se sella la primera vez que el anuncio pasa a `published` y ya no
 se vuelve a tocar.
 
-Cuando hay usuario autenticado, cada anuncio incluye `is_favorite`.
+Cuando hay usuario autenticado, cada anuncio incluye `is_favorite`. Cada foto trae
+`url` (original) y `thumbnail_url` para las parrillas.
+
+Un anuncio deja de listarse en cuanto pasa su `expires_at`, sin esperar al cron.
+El comando `php artisan listings:expire` (programado a las 03:00) pone en
+`expired` los que ya han caducado.
 
 ### Fotos
 
 | Método | Ruta | Auth | Descripción |
 | --- | --- | --- | --- |
-| POST | `/listings/{id}/photos` | sí | Sube una foto (`photo`, multipart; `type` opcional). Máximo 15 por anuncio, 5 MB, jpg/png/webp. |
+| POST | `/listings/{id}/photos` | sí | Sube una foto (`photo`, multipart; `type` opcional). Máximo 15 por anuncio, 5 MB, jpg/png/webp. Genera miniatura de 480 px. |
 | PUT | `/listings/{id}/photos/order` | sí | Reordena: `photos` con todos los ids del anuncio en el orden deseado. |
 | DELETE | `/listings/{id}/photos/{photo}` | sí | Borra la foto y su fichero. |
 
@@ -107,8 +116,13 @@ Cuando hay usuario autenticado, cada anuncio incluye `is_favorite`.
 
 ## Pendiente
 
-- Frontend (por decidir).
+- Frontend (en marcha).
 - Los datos del coche son compartidos por todos sus anuncios: editarlos desde
   un anuncio reescribe también los históricos. Si el historial crece en
   importancia, habrá que congelar una copia por anuncio.
-- Verificación de email y recuperación de contraseña.
+- Verificación de email (la recuperación de contraseña ya está).
+- Rol de administrador y moderación.
+- Despliegue a producción.
+
+Nota: retirar un anuncio no borra sus fotos del disco, a propósito: el anuncio
+puede volver a publicarse. Los ficheros se eliminan al borrar la foto.

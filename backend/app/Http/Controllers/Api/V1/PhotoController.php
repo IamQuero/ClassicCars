@@ -8,15 +8,17 @@ use App\Http\Requests\V1\StorePhotoRequest;
 use App\Http\Resources\V1\PhotoResource;
 use App\Models\Listing;
 use App\Models\Photo;
+use App\Services\ThumbnailMaker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
 {
     /** Máximo de fotos por anuncio. */
     private const MAX_PHOTOS = 15;
+
+    public function __construct(private readonly ThumbnailMaker $miniaturas) {}
 
     public function store(StorePhotoRequest $request, Listing $listing): JsonResponse
     {
@@ -32,6 +34,7 @@ class PhotoController extends Controller
 
         $photo = $listing->photos()->create([
             'path' => $path,
+            'thumbnail_path' => $this->miniaturas->generar($path),
             'type' => $request->validated('type'),
             // La primera foto es la 0, como deja el reordenado.
             'order' => $listing->photos()->max('order') === null
@@ -50,8 +53,7 @@ class PhotoController extends Controller
             return response()->json(['message' => 'Esa foto no es de este anuncio.'], 404);
         }
 
-        Storage::disk('public')->delete($photo->path);
-        $photo->delete();
+        $photo->delete(); // El modelo se encarga de borrar los ficheros.
 
         return response()->json(['message' => 'Foto eliminada']);
     }
