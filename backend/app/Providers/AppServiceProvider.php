@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -22,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // El enlace de recuperación lo abre el frontend, no Laravel.
+        ResetPassword::createUrlUsing(fn ($user, string $token) => rtrim(config('app.frontend_url'), '/')
+            .'/reset-password?token='.$token.'&email='.urlencode($user->email));
+
         // Registro y login son los puntos golpeables por fuerza bruta.
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(5)
             ->by($request->input('email').'|'.$request->ip()));

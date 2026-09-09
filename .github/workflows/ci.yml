@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  tests:
-    name: Pint y tests
+  backend:
+    name: Backend — Pint y tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -44,3 +44,30 @@ jobs:
 
       - name: Ejecutar los tests
         run: php artisan test
+
+  frontend:
+    name: Frontend — lint y build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar el código
+        run: npm run lint:check
+
+      - name: Compilar
+        run: npm run build

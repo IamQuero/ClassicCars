@@ -55,6 +55,13 @@ class Listing extends Model
         return $this->hasMany(Message::class);
     }
 
+    /** Publicados y todavía dentro de su fecha de caducidad. */
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('status', 'published')
+            ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()));
+    }
+
     public function scopeFilter(Builder $query, array $filters): Builder
     {
         return $query

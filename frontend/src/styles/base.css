@@ -1,0 +1,188 @@
+/* Estilos base y utilidades comunes. Todo sale de las variables de theme.css:
+   si algo tiene un color escrito a mano aquí, es un error. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  line-height: var(--interlineado);
+}
+
+h1, h2, h3 {
+  font-family: var(--fuente-titulos);
+  line-height: var(--interlineado-titulo);
+  margin: 0 0 var(--espacio-4);
+  font-weight: var(--peso-fuerte);
+}
+
+h1 { font-size: var(--texto-3xl); }
+h2 { font-size: var(--texto-2xl); }
+h3 { font-size: var(--texto-xl); }
+
+a {
+  color: var(--color-primario);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+img { max-width: 100%; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+/* --- Disposición --- */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 var(--espacio-4);
+}
+
+.pila { display: flex; flex-direction: column; gap: var(--espacio-4); }
+.fila { display: flex; align-items: center; gap: var(--espacio-3); }
+.fila-fin { margin-left: auto; }
+
+/* --- Tarjetas --- */
+
+.tarjeta {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-sm);
+  overflow: hidden;
+}
+
+.tarjeta-cuerpo { padding: var(--espacio-5); }
+
+/* --- Botones --- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3) var(--espacio-5);
+  border: 1px solid transparent;
+  border-radius: var(--radio-md);
+  background: var(--color-primario);
+  color: var(--color-texto-inverso);
+  font: inherit;
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+  transition: background var(--transicion), border-color var(--transicion);
+}
+
+.boton:hover { background: var(--color-primario-oscuro); text-decoration: none; }
+.boton:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.boton-secundario {
+  background: transparent;
+  border-color: var(--color-borde-fuerte);
+  color: var(--color-texto);
+}
+
+.boton-secundario:hover { background: var(--color-superficie-suave); }
+
+.boton-peligro {
+  background: transparent;
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.boton-peligro:hover { background: var(--color-error-suave); }
+
+.boton-pequeno { padding: var(--espacio-2) var(--espacio-3); font-size: var(--texto-sm); }
+
+/* --- Formularios --- */
+
+.campo { display: flex; flex-direction: column; gap: var(--espacio-2); }
+
+.campo label {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-suave);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: var(--espacio-3);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.campo textarea { min-height: 120px; resize: vertical; }
+
+.campo-error { color: var(--color-error); font-size: var(--texto-sm); }
+
+.rejilla-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--espacio-4);
+}
+
+/* --- Avisos --- */
+
+.aviso {
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-md);
+  border: 1px solid var(--color-borde);
+  background: var(--color-superficie-suave);
+  font-size: var(--texto-sm);
+}
+
+.aviso-error {
+  border-color: var(--color-error);
+  background: var(--color-error-suave);
+  color: var(--color-error);
+}
+
+.aviso-exito { border-color: var(--color-exito); color: var(--color-exito); }
+
+/* --- Etiquetas de estado --- */
+
+.etiqueta {
+  display: inline-block;
+  padding: var(--espacio-1) var(--espacio-3);
+  border-radius: var(--radio-redondo);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  background: var(--color-superficie-suave);
+  color: var(--color-texto-suave);
+}
+
+.etiqueta-publicado { background: var(--color-primario-suave); color: var(--color-primario-oscuro); }
+.etiqueta-vendido { background: var(--color-acento-suave); color: var(--color-acento); }
+
+/* --- Texto auxiliar --- */
+
+.texto-suave { color: var(--color-texto-suave); }
+.texto-pequeno { font-size: var(--texto-sm); }
+.precio {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-fuerte);
+  color: var(--color-acento);
+}
+
+.vacio {
+  padding: var(--espacio-7) var(--espacio-4);
+  text-align: center;
+  color: var(--color-texto-suave);
+}

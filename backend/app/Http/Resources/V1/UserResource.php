@@ -18,7 +18,7 @@ class UserResource extends JsonResource
 
     public function toArray($request): array
     {
-        $isSelf = $this->withEmail || $request->user()?->id === $this->id;
+        $isSelf = $this->withEmail || $request->user('sanctum')?->id === $this->id;
 
         return [
             'id' => $this->id,

@@ -56,6 +56,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | URL del frontend
+    |--------------------------------------------------------------------------
+    |
+    | Se usa para CORS y para construir los enlaces de los correos (por
+    | ejemplo el de recuperar contraseña), que abre el frontend y no Laravel.
+    |
+    */
+
+    'frontend_url' => explode(',', (string) env('FRONTEND_URL', 'http://localhost:5173'))[0],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Orígenes permitidos del frontend
+    |--------------------------------------------------------------------------
+    |
+    | FRONTEND_URL admite varias URLs separadas por comas: en desarrollo hacen
+    | falta al menos localhost y 127.0.0.1, porque el navegador trata cada uno
+    | como un origen distinto y CORS los distingue.
+    |
+    */
+
+    'frontend_origins' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('FRONTEND_URL', 'http://localhost:5173'))
+    ))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

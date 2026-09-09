@@ -41,10 +41,60 @@ class PhotoTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonPath('data.type', 'exterior')
-            ->assertJsonStructure(['data' => ['id', 'path', 'url', 'type', 'order']]);
+            ->assertJsonStructure(['data' => ['id', 'path', 'url', 'thumbnail_url', 'type', 'order']]);
 
         Storage::disk('public')->assertExists($response->json('data.path'));
         $this->assertDatabaseCount('photos', 1);
+    }
+
+    public function test_al_subir_una_foto_se_genera_su_miniatura(): void
+    {
+        [, $listing] = $this->anuncioPropio();
+
+        $respuesta = $this->postJson("/api/v1/listings/{$listing->id}/photos", [
+            'photo' => UploadedFile::fake()->image('frontal.jpg', 1600, 1200),
+        ])->assertCreated();
+
+        $miniatura = Photo::first()->thumbnail_path;
+
+        $this->assertNotNull($miniatura);
+        Storage::disk('public')->assertExists($miniatura);
+        $this->assertStringContainsString($miniatura, $respuesta->json('data.thumbnail_url'));
+
+        [$ancho] = getimagesizefromstring(Storage::disk('public')->get($miniatura));
+        $this->assertSame(480, $ancho);
+    }
+
+    public function test_una_imagen_pequena_no_se_amplia(): void
+    {
+        [, $listing] = $this->anuncioPropio();
+
+        $this->postJson("/api/v1/listings/{$listing->id}/photos", [
+            'photo' => UploadedFile::fake()->image('pequena.jpg', 200, 150),
+        ])->assertCreated();
+
+        [$ancho] = getimagesizefromstring(
+            Storage::disk('public')->get(Photo::first()->thumbnail_path)
+        );
+
+        $this->assertSame(200, $ancho);
+    }
+
+    public function test_borrar_una_foto_se_lleva_tambien_la_miniatura(): void
+    {
+        [, $listing] = $this->anuncioPropio();
+        $this->postJson("/api/v1/listings/{$listing->id}/photos", [
+            'photo' => UploadedFile::fake()->image('frontal.jpg', 1600, 1200),
+        ])->assertCreated();
+
+        $photo = Photo::first();
+        $original = $photo->path;
+        $miniatura = $photo->thumbnail_path;
+
+        $this->deleteJson("/api/v1/listings/{$listing->id}/photos/{$photo->id}")->assertOk();
+
+        Storage::disk('public')->assertMissing($original);
+        Storage::disk('public')->assertMissing($miniatura);
     }
 
     public function test_las_fotos_se_numeran_de_forma_correlativa(): void

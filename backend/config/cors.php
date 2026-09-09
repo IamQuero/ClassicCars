@@ -7,9 +7,9 @@ return [
     | Cross-Origin Resource Sharing (CORS)
     |--------------------------------------------------------------------------
     |
-    | El frontend vivirá en otro origen (Vite en :5173, por ejemplo), así que
-    | la API tiene que permitirlo explícitamente. FRONTEND_URL se define en el
-    | .env de cada entorno.
+    | El frontend vive en otro origen (Vite en :5173, por ejemplo), así que la
+    | API tiene que permitirlo explícitamente. FRONTEND_URL admite una lista
+    | separada por comas y se define en el .env de cada entorno.
     |
     */
 
@@ -17,7 +17,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173')],
+    'allowed_origins' => config('app.frontend_origins'),
 
     'allowed_origins_patterns' => [],
 
